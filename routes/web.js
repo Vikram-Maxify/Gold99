@@ -18,19 +18,19 @@ import carController from "../controllers/carController";
 import supportController from "../controllers/supportController";
 import commissionController from "../controllers/commissionController"
 
-import { addBonus, addProblem, addUSDTAddress, bankModification, bankName, depositNotReceived, ifscModification, sendOtp, updatePassword, updatePassword2 ,getDepositNotReceived,getifscModification,getUserBank,getBankModification,bonusDetails,problemsDetails,getUsdtAddress,problemAcceptOrReject,bonusAcceptOrReject,addressAcceptOrReject,modifyBankAcceptorReject,depositAcceptOrReject,getwithdrawlProblems,withdrawlProblemsAcceptOrReject,getRecharge,getwithdrawl2,withdrawlProblems} from "../controllers/depositNotRecieved";
+import { addBonus, addProblem, addUSDTAddress, bankModification, bankName, depositNotReceived, ifscModification, sendOtp, updatePassword, updatePassword2, getDepositNotReceived, getifscModification, getUserBank, getBankModification, bonusDetails, problemsDetails, getUsdtAddress, problemAcceptOrReject, bonusAcceptOrReject, addressAcceptOrReject, modifyBankAcceptorReject, depositAcceptOrReject, getwithdrawlProblems, withdrawlProblemsAcceptOrReject, getRecharge, getwithdrawl2, withdrawlProblems } from "../controllers/depositNotRecieved";
 
 
 const multer = require('multer');
 const path = require('path');
 
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/');
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname));
-    }
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  }
 });
 
 
@@ -108,32 +108,32 @@ const initWebRouter = (app) => {
 
   // app.use(maintenanceMode);
   // page account
-  
+
 
   router.delete('/delete/item/:id', async (req, res) => {
-      
+
     const { id } = req.params;
-    
+
     try {
       const sql = `DELETE FROM rechargeBonus WHERE id = ?`;
       const [result] = await connection.execute(sql, [id]);
-  
+
       if (result.affectedRows === 0) {
         return res.status(404).json({ error: 'Item not found' });
       }
-  
+
       res.status(200).json({ success: true, message: 'Item deleted successfully' });
     } catch (err) {
       console.error("Error deleting item:", err);
       res.status(500).json({ error: 'Database query failed' });
     }
-    
+
   });
-    
-    
-    
- router.get("/gettime_now", (req, res) => {
-  res.status(503).send(`<form action="/support/submitGameProblem" method="POST" enctype="multipart/form-data">
+
+
+
+  router.get("/gettime_now", (req, res) => {
+    res.status(503).send(`<form action="/support/submitGameProblem" method="POST" enctype="multipart/form-data">
   <!-- Issue Description -->
   <div class="form-item">
     <label for="issueDescription">Explain the issue happen to you inside the game clear and detail:</label>
@@ -171,13 +171,13 @@ const initWebRouter = (app) => {
 </form>
 
 `);
-});
+  });
 
- 
+
   router.post('/support/submit-verification', supportController.upload, supportController.submitVerification);
-  
+
   router.post('/support/submitGameProblem', supportController.uploadGameProblem, supportController.submitGameProblem);
-    
+
   router.post('/support/submit-verification-id', supportController.upload_Retrieve_Login, supportController.submit_Retrieve_Login);
 
 
@@ -194,7 +194,7 @@ const initWebRouter = (app) => {
 
   router.get("/aviator", userController.aviator);
 
-   // all game apis
+  // all game apis
   router.post("/api/spribeapi/checkBalance", allGameController.checkBalance);
   router.post(
     "/api/spribeapi/transferBalance",
@@ -217,7 +217,12 @@ const initWebRouter = (app) => {
     allGameController.gameListByGameTypeAndProvider
   );
   router.post("/api/spribeapi/gameHistory/:id", allGameController.gameHistory);
-  
+
+  router.post("/api/webapi/rechargepay", userController.handleRechargeppay);
+
+  router.post("/api/webapi/callbackdatappay", userController.callbackdatappay);
+
+
 
   // page home
   // router.get('/', (req, res) => {
@@ -239,7 +244,7 @@ const initWebRouter = (app) => {
     middlewareController,
     userController.downlinerecharge_data
   );
-    router.post(
+  router.post(
     "/api/webapi/fetchPromotionDataUser",
     middlewareController,
     userController.fetchPromotionDataUser
@@ -251,29 +256,29 @@ const initWebRouter = (app) => {
     middlewareController,
     userController.commissiondata
   );
-  
-   router.get(
+
+  router.get(
     "/api/webapi/logincount",
     middlewareController,
     accountController.getLogincount
   );
-  
-   router.get(
+
+  router.get(
     "/api/webapi/loginupdate",
     middlewareController,
     accountController.getLoginupdate
   );
-  
-  
-  
-   router.get("/api/webapi/promotioncron", commissionController.promotion);
- router.get("/api/webapi/downlinerecharge_newcron", commissionController.downlinerecharge_new); 
- router.get("/api/webapi/tradeCommissioncron", winGoController.tradeCommission); 
 
- router.get("/api/webapi/vipLevelEverycron", userController.vipLevelEvery); 
 
- router.get("/api/webapi/vipLevelMonthlycron", userController.vipLevelMonthly); 
-  
+
+  router.get("/api/webapi/promotioncron", commissionController.promotion);
+  router.get("/api/webapi/downlinerecharge_newcron", commissionController.downlinerecharge_new);
+  router.get("/api/webapi/tradeCommissioncron", winGoController.tradeCommission);
+
+  router.get("/api/webapi/vipLevelEverycron", userController.vipLevelEvery);
+
+  router.get("/api/webapi/vipLevelMonthlycron", userController.vipLevelMonthly);
+
 
   router.get(
     "/api/webapi/subordinatedata",
@@ -288,7 +293,7 @@ const initWebRouter = (app) => {
   );
   router.get(
     "/api/webapi/vip-data",
-     middlewareController,
+    middlewareController,
     userController.getVipData
   );
   router.post(
@@ -309,13 +314,13 @@ const initWebRouter = (app) => {
     adminController.middlewareAdminController,
     adminController.promotionsPage
   );
-  
-    router.post(
+
+  router.post(
     "/api/webapi/admin/totalJoin",
     adminController.middlewareAdminController,
     adminController.totalJoin
   );
-  
+
 
   router.get("/user/permissions", async (req, res) => {
     try {
@@ -356,39 +361,39 @@ const initWebRouter = (app) => {
     adminController.middlewareAdminController,
     adminController.createsubadmin
   );
-  
+
   router.get(
     "/webapi/getAllAdmins",
     adminController.middlewareAdminController,
     adminController.getAllAdmins
   );
-  
+
   //router.post(
   //  "/webapi/deleteadmin",
   //  adminController.middlewareAdminController,
   //  adminController.deleteadmin
   //);
-  
-  
+
+
   router.post(
     "/webapi/deleteadmin",
     adminController.middlewareAdminController,
     adminController.deleteadmin_1
   );
-  
+
   router.post(
     "/webapi/edituserpermissions",
     adminController.middlewareAdminController,
     adminController.editUserPermissions
   );
-  
+
   router.get(
     "/webapi/getuserpermissions",
     adminController.middlewareAdminController,
     adminController.getUserPermissions
   );
-  
-  
+
+
 
 
   router.get(
@@ -796,14 +801,14 @@ const initWebRouter = (app) => {
     middlewareController,
     userController.addBank
   ); // register
-  
-   router.post(
+
+  router.post(
     "/api/webapi/addusdt",
     middlewareController,
     userController.addUSDT
   ); // register
-  
-  
+
+
   router.post(
     "/api/webapi/otp",
     middlewareController,
@@ -836,38 +841,38 @@ const initWebRouter = (app) => {
     // upload.none(),
     userController.recharge
   );
-  
-  
- router.post(
-  "/api/webapi/zilpayCallback",
-  userController.zilpayCallback
-);
 
-   router.post(
+
+  router.post(
+    "/api/webapi/zilpayCallback",
+    userController.zilpayCallback
+  );
+
+  router.post(
     "/api/webapi/zilpay",
- middlewareController,
+    middlewareController,
     userController.zilpay
   );
-  
-  
-    router.post(
+
+
+  router.post(
     "/api/webapi/initiateTrexoPayPayment",
-  middlewareController,
+    middlewareController,
     userController.initiateTrexoPayPayment
   );
-  
-  
-  
-  
-  
-  
-   router.post(
+
+
+
+
+
+
+  router.post(
     "/api/webapi/verifyTrexoPayPayment",
- upload.none(),
+    upload.none(),
     userController.verifyTrexoPayPayment
   );
 
-  
+
   router.get("/api/webapi/bhatclub_callback", userController.handleCallback);
   router.post(
     "/api/webapi/online-recharge",
@@ -886,88 +891,88 @@ const initWebRouter = (app) => {
     middlewareController,
     userController.confirmRecharge
   );
-  
+
   router.get(
     "/api/webapi/getdailyactivyreward",
     middlewareController,
     userController.getdailyactivyreward
   );
-  
-    router.get("/api/webapi/bonus-get", async (req, res) => {
-      try {
-        const [bonusSettings] = await connection.query(
-          "SELECT `id`, `betrequriment`, `bonus`, `type`, `created_at`, `updated_at` FROM `bonus_settings`"
-        );
-        return res.status(200).json({ message: "Bonus retrieved successfully", success: true, data: bonusSettings });
-      } catch (error) {
-        console.error("Error fetching bonus settings:", error);
-        return res.status(500).json({ message: "Internal server error", success: false, error: error.message });
+
+  router.get("/api/webapi/bonus-get", async (req, res) => {
+    try {
+      const [bonusSettings] = await connection.query(
+        "SELECT `id`, `betrequriment`, `bonus`, `type`, `created_at`, `updated_at` FROM `bonus_settings`"
+      );
+      return res.status(200).json({ message: "Bonus retrieved successfully", success: true, data: bonusSettings });
+    } catch (error) {
+      console.error("Error fetching bonus settings:", error);
+      return res.status(500).json({ message: "Internal server error", success: false, error: error.message });
+    }
+  });
+
+  router.post("/api/webapi/bonus-settings", async (req, res) => {
+    try {
+      const { betrequriment, bonus, type } = req.body;
+
+      if (!betrequriment || !bonus || !type) {
+        return res.status(400).json({ message: "Missing required fields", success: false });
       }
-    });
-    
-    router.post("/api/webapi/bonus-settings", async (req, res) => {
-      try {
-        const { betrequriment, bonus, type } = req.body;
-    
-        if (!betrequriment || !bonus || !type) {
-          return res.status(400).json({ message: "Missing required fields", success: false });
-        }
-    
-        await connection.query(
-          "INSERT INTO bonus_settings (betrequriment, bonus, type) VALUES (?, ?, ?)",
-          [betrequriment, bonus, type]
-        );
-    
-        return res.status(201).json({ message: "Bonus setting created successfully", success: true });
-      } catch (error) {
-        console.error("Error creating bonus setting:", error);
-        return res.status(500).json({ message: "Internal server error", success: false, error: error.message });
+
+      await connection.query(
+        "INSERT INTO bonus_settings (betrequriment, bonus, type) VALUES (?, ?, ?)",
+        [betrequriment, bonus, type]
+      );
+
+      return res.status(201).json({ message: "Bonus setting created successfully", success: true });
+    } catch (error) {
+      console.error("Error creating bonus setting:", error);
+      return res.status(500).json({ message: "Internal server error", success: false, error: error.message });
+    }
+  });
+
+  // Update an existing bonus setting
+  router.post("/api/webapi/bonus-settings_update", async (req, res) => {
+    try {
+
+      const { betrequriment, bonus, type, id } = req.body;
+
+      if (!betrequriment || !bonus || !type) {
+        return res.status(400).json({ message: "Missing required fields", success: false });
       }
-    });
-    
-    // Update an existing bonus setting
-    router.post("/api/webapi/bonus-settings_update", async (req, res) => {
-      try {
-          
-        const { betrequriment, bonus, type, id } = req.body;
-    
-        if (!betrequriment || !bonus || !type) {
-          return res.status(400).json({ message: "Missing required fields", success: false });
-        }
-    
-        const [result] = await connection.query(
-          "UPDATE bonus_settings SET betrequriment = ?, bonus = ?, type = ? WHERE id = ?",
-          [betrequriment, bonus, type, id]
-        );
-    
-        if (result.affectedRows === 0) {
-          return res.status(404).json({ message: "Bonus setting not found", success: false });
-        }
-    
-        return res.status(200).json({ message: "Bonus setting updated successfully", success: true });
-      } catch (error) {
-        console.error("Error updating bonus setting:", error);
-        return res.status(500).json({ message: "Internal server error", success: false, error: error.message });
+
+      const [result] = await connection.query(
+        "UPDATE bonus_settings SET betrequriment = ?, bonus = ?, type = ? WHERE id = ?",
+        [betrequriment, bonus, type, id]
+      );
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: "Bonus setting not found", success: false });
       }
-    });
-    
-    // Delete a bonus setting
-    router.delete("/api/webapi/bonus-settings/:id", async (req, res) => {
-      try {
-        const { id } = req.params;
-        const [result] = await connection.query("DELETE FROM bonus_settings WHERE id = ?", [id]);
-    
-        if (result.affectedRows === 0) {
-          return res.status(404).json({ message: "Bonus setting not found", success: false });
-        }
-    
-        return res.status(200).json({ message: "Bonus setting deleted successfully", success: true });
-      } catch (error) {
-        console.error("Error deleting bonus setting:", error);
-        return res.status(500).json({ message: "Internal server error", success: false, error: error.message });
+
+      return res.status(200).json({ message: "Bonus setting updated successfully", success: true });
+    } catch (error) {
+      console.error("Error updating bonus setting:", error);
+      return res.status(500).json({ message: "Internal server error", success: false, error: error.message });
+    }
+  });
+
+  // Delete a bonus setting
+  router.delete("/api/webapi/bonus-settings/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const [result] = await connection.query("DELETE FROM bonus_settings WHERE id = ?", [id]);
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: "Bonus setting not found", success: false });
       }
-    });
-  
+
+      return res.status(200).json({ message: "Bonus setting deleted successfully", success: true });
+    } catch (error) {
+      console.error("Error deleting bonus setting:", error);
+      return res.status(500).json({ message: "Internal server error", success: false, error: error.message });
+    }
+  });
+
   router.get(
     "/api/webapi/myTeam",
     middlewareController,
@@ -978,14 +983,14 @@ const initWebRouter = (app) => {
     middlewareController,
     userController.listRecharge
   ); // register
-  
-     router.get(
+
+  router.get(
     "/api/webapi/recharge/list2",
     middlewareController,
     userController.listRecharge2
   ); // register
-  
-  
+
+
   router.get(
     "/api/webapi/withdraw/list",
     middlewareController,
@@ -1170,7 +1175,7 @@ const initWebRouter = (app) => {
   );
   router.get(
     "/api/webapi/get-spin-data",
-     middlewareController,
+    middlewareController,
     userController.getSpinData
   );
   router.post(
@@ -1178,8 +1183,8 @@ const initWebRouter = (app) => {
     middlewareController,
     userController.claimSpin
   );
-  
-    router.get(
+
+  router.get(
     "/api/webapi/spin-history",
     middlewareController,
     userController.spineHistory
@@ -1211,7 +1216,7 @@ const initWebRouter = (app) => {
 
   router.get(
     "/api/webapi/admin/get-commission",
-     middlewareController,
+    middlewareController,
     winGoController.tradeCommissionGet
   ); // register
 
@@ -1232,12 +1237,12 @@ const initWebRouter = (app) => {
     adminController.middlewareAdminController,
     adminController.userlevelPage
   ); // get info account
-   router.get(
+  router.get(
     "/admin/manager/userlevelAll",
     adminController.middlewareAdminController,
     adminController.userlevelAllPage
   ); // get info account
-  
+
 
   router.post(
     "/api/webapi/admin/manager/user-data",
@@ -1346,32 +1351,32 @@ const initWebRouter = (app) => {
     adminController.middlewareAdminController,
     adminController.adminPage10
   ); // get info account
-  
-  
-    router.get(
+
+
+  router.get(
     "/api/webapi/admin/transactionHistory",
     adminController.middlewareAdminController,
     adminController.transactionHistoryadmin
   ); // get info account
-  
-   router.get(
+
+  router.get(
     "/admin/manager/commission",
     adminController.middlewareAdminController,
     adminController.commissionHistoryPage
   ); // get info account
-  
-  
-  
-  
-  
-     router.post(
+
+
+
+
+
+  router.post(
     "/api/admin/enableWithdraw",
     adminController.middlewareAdminController,
     adminController.enableWithdraw
   ); // get info account
-  
-  
-   router.get(
+
+
+  router.get(
     "/admin/manager/carIndex",
     adminController.middlewareAdminController,
     adminController.adminCarPage
@@ -1391,9 +1396,9 @@ const initWebRouter = (app) => {
     adminController.middlewareAdminController,
     adminController.adminCarPage10
   ); // get info account
-  
-  
-  
+
+
+
 
   router.get(
     "/admin/manager/Home",
@@ -1467,7 +1472,7 @@ const initWebRouter = (app) => {
     adminController.middlewareAdminController,
     adminController.ctvPage
   ); // get info account
-    router.get(
+  router.get(
     "/admin/manager/demouser",
     adminController.middlewareAdminController,
     adminController.demouser
@@ -1493,19 +1498,19 @@ const initWebRouter = (app) => {
     adminController.middlewareAdminController,
     adminController.todayreport
   ); // get info account
-  
+
   router.post(
     "/admin/manager/settings/message",
     adminController.middlewareAdminController,
     adminController.settingMessage
   ); // get info account
-  
+
   router.get(
     "/admin/manager/settings",
     adminController.middlewareAdminController,
     adminController.settings
   ); // get info account
-  
+
   router.get(
     "/admin/manager/listRedenvelops",
     adminController.middlewareAdminController,
@@ -1669,7 +1674,7 @@ const initWebRouter = (app) => {
 
   router.post(
     "/api/webapi/getweeldetails",
-     middlewareController,
+    middlewareController,
     userController.redeemSpin
   );
 
@@ -1688,32 +1693,32 @@ const initWebRouter = (app) => {
     adminController.middlewareAdminController,
     adminController.handlWithdraw
   ); // get info account
-  
-   router.post(
+
+  router.post(
     "/api/handlWithdrawCallback",
-    adminController.handlWithdrawCallback 
+    adminController.handlWithdrawCallback
   );
-  
-  
-  
+
+
+
   router.post(
     "/api/webapi/admin/recharge",
     adminController.middlewareAdminController,
     adminController.recharge
   ); // get info account
-  
+
   router.post(
     "/api/webapi/admin/rechargeDuyet",
     adminController.middlewareAdminController,
     adminController.rechargeDuyet
   ); // get info account
-  
+
   router.post(
     "/api/webapi/admin/spinset",
     adminController.middlewareAdminController,
     adminController.spinset
   ); // get info account
-  
+
   router.post(
     "/api/webapi/admin/member/info",
     adminController.middlewareAdminController,
@@ -1730,8 +1735,8 @@ const initWebRouter = (app) => {
     adminController.middlewareAdminController,
     adminController.banned
   ); // get info account
-  
-    router.post(
+
+  router.post(
     "/api/webapi/admin/eliga-unblock",
     adminController.middlewareAdminController,
     adminController.eligaUnblockUser
@@ -1757,21 +1762,21 @@ const initWebRouter = (app) => {
     adminController.middlewareAdminController,
     adminController.totalJoinRacing
   ); // get info account
-  
-  
+
+
   router.post(
     "/api/webapi/admin/change",
     adminController.middlewareAdminController,
     adminController.changeAdmin
   ); // get info account
-  
-    router.post(
+
+  router.post(
     "/api/webapi/admin/racing/change",
     adminController.middlewareAdminController,
     adminController.changeAdminRacing
   ); // get info account
-  
-  
+
+
   router.post(
     "/api/webapi/admin/profileUser",
     adminController.middlewareAdminController,
@@ -1841,21 +1846,21 @@ const initWebRouter = (app) => {
     middlewareController,
     jilliController.jillitransfermoney
   );
-  
-    router.get(
+
+  router.get(
     "/api/webapi/demoUser",
     adminController.middlewareAdminController,
     adminController.demoUser
   );
-    router.post(
+  router.post(
     "/api/webapi/convertAgent",
     adminController.middlewareAdminController,
     adminController.convertAgent
   );
-  
-  
-//   pages
- router.get(
+
+
+  //   pages
+  router.get(
     "/admin/manager/deposite",
     adminController.middlewareAdminController,
     adminController.depositePage
@@ -1893,67 +1898,67 @@ const initWebRouter = (app) => {
     adminController.gameProblems
   );
 
-   
-// suport system  
-   router.get("/api/recharge/:auth",getRecharge);
-router.get("/api/withdrawl2/:auth",getwithdrawl2);
 
-  
-  
-  
-  router.post("/api/deposit" ,depositNotReceived ) ;
-  
-  router.post("/api/ifsc" , ifscModification );
-  
-  router.post("/api/bankName" , bankName)
-  
-  router.post("/api/modification",bankModification);
-  
+  // suport system  
+  router.get("/api/recharge/:auth", getRecharge);
+  router.get("/api/withdrawl2/:auth", getwithdrawl2);
+
+
+
+
+  router.post("/api/deposit", depositNotReceived);
+
+  router.post("/api/ifsc", ifscModification);
+
+  router.post("/api/bankName", bankName)
+
+  router.post("/api/modification", bankModification);
+
   router.post("/api/usdt", addUSDTAddress);
-  
-  router.post("/api/bonus" ,  addBonus);
-  
+
+  router.post("/api/bonus", addBonus);
+
   router.post("/api/problem", addProblem);
-  
+
   router.post("/api/sendotp", sendOtp);
-  
-  router.post("/api/updatepassword", updatePassword )
-  
+
+  router.post("/api/updatepassword", updatePassword)
+
   router.post("/api/password", updatePassword2)
-  
-  
+
+
   //get details api
-  router.get("/api/webapi/getdetails", getDepositNotReceived ); //
- router.get("/api/webapi/usdtdetails",getUsdtAddress)
+  router.get("/api/webapi/getdetails", getDepositNotReceived); //
+  router.get("/api/webapi/usdtdetails", getUsdtAddress)
 
 
 
-  router.get("/api/webapi/modificationdetails",getifscModification);
-  router.get("/api/webapi/userbankdetails",getUserBank);
+  router.get("/api/webapi/modificationdetails", getifscModification);
+  router.get("/api/webapi/userbankdetails", getUserBank);
 
 
 
-  router.get("/api/webapi/bankdetails",getBankModification);//
-  router.get("/api/webapi/bonusdetails",bonusDetails); //
-  router.get("/api/webapi/problemsdetails" ,problemsDetails);//
-  router.get("/api/webapi/withproblem",getwithdrawlProblems);
+  router.get("/api/webapi/bankdetails", getBankModification);//
+  router.get("/api/webapi/bonusdetails", bonusDetails); //
+  router.get("/api/webapi/problemsdetails", problemsDetails);//
+  router.get("/api/webapi/withproblem", getwithdrawlProblems);
 
-router.post("/api/withdrawlproblem" ,withdrawlProblems)
+  router.post("/api/withdrawlproblem", withdrawlProblems)
 
 
   //Admin 
- router.post("/api/webapi/status/:status/:id" ,depositAcceptOrReject);
+  router.post("/api/webapi/status/:status/:id", depositAcceptOrReject);
 
-router.post("/api/webapi/bankstatus/:status/:id",modifyBankAcceptorReject);
+  router.post("/api/webapi/bankstatus/:status/:id", modifyBankAcceptorReject);
 
 
-router.post("/api/webapi/addressstatus/:status/:id",addressAcceptOrReject);
+  router.post("/api/webapi/addressstatus/:status/:id", addressAcceptOrReject);
 
-router.post("/api/webapi/bonusstatus/:status/:id",bonusAcceptOrReject);
+  router.post("/api/webapi/bonusstatus/:status/:id", bonusAcceptOrReject);
 
-router.post("/api/webapi/problemsstatus/:status/:id",problemAcceptOrReject);
+  router.post("/api/webapi/problemsstatus/:status/:id", problemAcceptOrReject);
 
-router.post("/api/webapi/withprob/:status/:id",withdrawlProblemsAcceptOrReject);
+  router.post("/api/webapi/withprob/:status/:id", withdrawlProblemsAcceptOrReject);
 
 
 

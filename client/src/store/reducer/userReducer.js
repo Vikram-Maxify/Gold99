@@ -211,6 +211,22 @@ export const recharge2 = createAsyncThunk(
     }
   }
 );
+export const recharge3 = createAsyncThunk(
+  "auth/recharge3",
+  async ({ amount, type }, { rejectWithValue, fulfillWithValue }) => {
+    try {
+      const { data } = await api.post(
+        "/webapi/rechargepay",
+        { amount: amount, type: type },
+        { withCredentials: true },
+      );
+      return fulfillWithValue(data);
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  },
+);
+
 
 export const userReducer = createSlice({
   name: "user",
@@ -252,6 +268,21 @@ export const userReducer = createSlice({
         state.loader = false;
         state.rechargeData = rechargeData;
       })
+      .addCase(recharge3.pending, (state) => {
+        state.loader = true;
+      })
+      .addCase(recharge3.rejected, (state, { payload }) => {
+        // console.log('register rejected payload:', payload); // Log payload
+        state.errorMessage = payload?.errorMessage || "An error occurred";
+        state.loader = false;
+      })
+      .addCase(recharge3.fulfilled, (state, { payload }) => {
+        const rechargeDatas = payload;
+        state.successMessage = payload.message;
+        state.loader = false;
+        state.rechargeData = rechargeDatas;
+      })
+
 
       .addCase(rechargeGet.pending, (state) => {
         state.loader = true;

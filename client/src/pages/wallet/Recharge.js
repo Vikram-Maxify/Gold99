@@ -16,6 +16,7 @@ import {
   bannerGet,
   recharge,
   recharge2,
+  recharge3,
   TrexoPayment,
   zilpayRecharge,
 } from "../../store/reducer/userReducer";
@@ -50,6 +51,123 @@ export default function Recharge() {
     { label: "ARPay", Icons: AR, g: false },
   ];
 
+  // const handleSubmit = async () => {
+  //   const type = activeTab2;
+  //   const formData = new FormData();
+  //   formData.append("amount", amount);
+  //   formData.append("type", type);
+
+  //   if (activeTab === "UPI-QR") {
+  //     if (bannergetData?.chennal?.status1 == 1) {
+  //       dispatch(TrexoPayment({ amount, type })).then((res) => {
+  //         setSuccessMessage(res.payload.message);
+  //         if (res.payload.status) {
+  //           setAlertsuccess(true);
+  //           // console.log("data",res.payload.data)
+  //           window.location.href = res.payload.data.payment_url;
+  //         } else {
+  //           setAlerts(true);
+  //         }
+  //         setTimeout(() => {
+  //           setSuccessMessage("");
+  //         }, 3000);
+  //       });
+  //     } else {
+  //       dispatch(zilpayRecharge({ amount, type })).then((res) => {
+  //         setSuccessMessage(res.payload.message);
+  //         if (res.payload.status) {
+  //           setAlertsuccess(true);
+  //           //  window.open(urls, "_blank");
+
+  //           window.location.href = res.payload.data.url;
+  //         } else {
+  //           setAlerts(true);
+  //         }
+  //         setTimeout(() => {
+  //           setSuccessMessage("");
+  //         }, 3000);
+  //       });
+  //     }
+  //   } else if (activeTab === "UPI-QRpay" || activeTab === "Wake UP-APP") {
+  //     if (bannergetData?.chennal?.status2 == 1) {
+  //       dispatch(zilpayRecharge({ amount, type })).then((res) => {
+  //         setSuccessMessage(res.payload.message);
+  //         if (res.payload.status) {
+  //           setAlertsuccess(true);
+  //           //  window.open(urls, "_blank");
+
+  //           window.location.href = res.payload.data.url;
+  //         } else {
+  //           setAlerts(true);
+  //         }
+  //         setTimeout(() => {
+  //           setSuccessMessage("");
+  //         }, 3000);
+  //       });
+  //     } else {
+  //       dispatch(zilpayRecharge({ amount, type })).then((res) => {
+  //         setSuccessMessage(res.payload.message);
+  //         if (res.payload.status) {
+  //           setAlertsuccess(true);
+  //           //  window.open(urls, "_blank");
+
+  //           window.location.href = res.payload.data.url;
+  //         } else {
+  //           setAlerts(true);
+  //         }
+  //         setTimeout(() => {
+  //           setSuccessMessage("");
+  //         }, 3000);
+  //       });
+  //     }
+  //   } else if (activeTab === "UPI-PayTM") {
+  //     if (bannergetData?.chennal?.status3 == 1) {
+  //       dispatch(TrexoPayment({ amount, type })).then((res) => {
+  //         setSuccessMessage(res.payload.message);
+  //         if (res.payload.status) {
+  //           setAlertsuccess(true);
+  //           // console.log("data",res.payload.data)
+  //           window.location.href = res.payload.data.payment_url;
+  //         } else {
+  //           setAlerts(true);
+  //         }
+  //         setTimeout(() => {
+  //           setSuccessMessage("");
+  //         }, 3000);
+  //       });
+  //     } else {
+  //       dispatch(TrexoPayment({ amount, type })).then((res) => {
+  //         setSuccessMessage(res.payload.message);
+  //         if (res.payload.status) {
+  //           setAlertsuccess(true);
+  //           // console.log("data",res.payload.data)
+  //           window.location.href = res.payload.data.payment_url;
+  //         } else {
+  //           setAlerts(true);
+  //         }
+  //         setTimeout(() => {
+  //           setSuccessMessage("");
+  //         }, 3000);
+  //       });
+  //     }
+  //   } else {
+  //     dispatch(zilpayRecharge({ amount, type })).then((res) => {
+  //       setSuccessMessage(res.payload.message);
+  //       if (res.payload.status) {
+  //         setAlertsuccess(true);
+  //         // const urls=res.payload.data.url
+  //         window.location.href = res.payload.data.url;
+  //         //  window.open(urls, "_blank");
+  //       } else {
+  //         setAlerts(true);
+  //       }
+  //       setTimeout(() => {
+  //         setSuccessMessage("");
+  //       }, 3000);
+  //     });
+  //   }
+  // };
+
   const handleSubmit = async () => {
     const type = activeTab2;
     const formData = new FormData();
@@ -72,51 +190,48 @@ export default function Recharge() {
           }, 3000);
         });
       } else {
-        dispatch(zilpayRecharge({ amount, type })).then((res) => {
+        dispatch(recharge3({ amount, type })).then((res) => {
           setSuccessMessage(res.payload.message);
           if (res.payload.status) {
             setAlertsuccess(true);
-            //  window.open(urls, "_blank");
 
-            window.location.href = res.payload.data.url;
+            window.open(res.payload.data.payData, "_blank");
           } else {
             setAlerts(true);
           }
           setTimeout(() => {
             setSuccessMessage("");
-          }, 3000);
+          }, 2000);
         });
       }
     } else if (activeTab === "UPI-QRpay" || activeTab === "Wake UP-APP") {
       if (bannergetData?.chennal?.status2 == 1) {
-        dispatch(zilpayRecharge({ amount, type })).then((res) => {
+        dispatch(recharge3({ amount, type })).then((res) => {
           setSuccessMessage(res.payload.message);
           if (res.payload.status) {
             setAlertsuccess(true);
-            //  window.open(urls, "_blank");
 
-            window.location.href = res.payload.data.url;
+            window.open(res.payload.data.payData, "_blank");
           } else {
             setAlerts(true);
           }
           setTimeout(() => {
             setSuccessMessage("");
-          }, 3000);
+          }, 2000);
         });
       } else {
-        dispatch(zilpayRecharge({ amount, type })).then((res) => {
+        dispatch(recharge3({ amount, type })).then((res) => {
           setSuccessMessage(res.payload.message);
           if (res.payload.status) {
             setAlertsuccess(true);
-            //  window.open(urls, "_blank");
 
-            window.location.href = res.payload.data.url;
+            window.open(res.payload.data.payData, "_blank");
           } else {
             setAlerts(true);
           }
           setTimeout(() => {
             setSuccessMessage("");
-          }, 3000);
+          }, 2000);
         });
       }
     } else if (activeTab === "UPI-PayTM") {
@@ -226,9 +341,9 @@ export default function Recharge() {
               ₹{" "}
               {userInfo?.money_user
                 ? Number(userInfo?.money_user).toLocaleString("en-IN", {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })
                 : "0.00"}
             </h3>
             <img
@@ -244,11 +359,10 @@ export default function Recharge() {
           {tabs.map((tab) => (
             <button
               key={tab.label}
-              className={`col-span-3 py-3 bg-light relative text-sm flex justify-center flex-col items-center rounded ${
-                activeTab === tab.label
+              className={`col-span-3 py-3 bg-light relative text-sm flex justify-center flex-col items-center rounded ${activeTab === tab.label
                   ? "blue-linear text-black"
                   : "bg-light gray-100"
-              }`}
+                }`}
               onClick={() => {
                 setActiveTab(tab.label); // Update the active tab
                 setActiveIndex(0); // Reset index to 0
@@ -294,11 +408,10 @@ export default function Recharge() {
                         {channel.channelItem.map((item, index) => (
                           <div
                             key={index}
-                            className={` p-2 rounded-md cursor-pointer ${
-                              index === activeIndex
+                            className={` p-2 rounded-md cursor-pointer ${index === activeIndex
                                 ? "blue-linear text-black"
                                 : "bg-bluest gray-100"
-                            } `}
+                              } `}
                             onClick={() => {
                               setActiveTab2(item.label);
                               setActiveIndex(index);
@@ -332,11 +445,10 @@ export default function Recharge() {
                               {item.depositAmount.map((data, index2) => (
                                 <button
                                   key={index2}
-                                  className={`flex items-center justify-center col-span-4 p-1 rounded font-semibold  ${
-                                    amount == data.am
+                                  className={`flex items-center justify-center col-span-4 p-1 rounded font-semibold  ${amount == data.am
                                       ? "blue-linear text-black"
                                       : "border text-blue sky-border"
-                                  }`}
+                                    }`}
                                   onClick={() => setAmount(data.am)}
                                 >
                                   <img
@@ -379,13 +491,12 @@ export default function Recharge() {
                 </div>
 
                 <button
-                  className={`  w-full rounded-full p-2 mt-4  ${
-                    amount > 9
+                  className={`  w-full rounded-full p-2 mt-4  ${amount > 9
                       ? "blue-linear text-black"
                       : "bg-gray-400 text-white"
-                  }`}
+                    }`}
                   disabled={loader ? true : false}
-                  // onClick={handleSubmitUSDT}
+                // onClick={handleSubmitUSDT}
                 >
                   Deposit
                 </button>
@@ -407,19 +518,17 @@ export default function Recharge() {
                                 {item.depositAmount.map((data, index2) => (
                                   <button
                                     key={index2}
-                                    className={` col-span-4 p-1 rounded font-semibold  ${
-                                      amount == data.am
+                                    className={` col-span-4 p-1 rounded font-semibold  ${amount == data.am
                                         ? "blue-linear text-black"
                                         : "border text-blue sky-border"
-                                    }`}
+                                      }`}
                                     onClick={() => setAmount(data.am)}
                                   >
                                     <span
-                                      className={` mx-2 ${
-                                        amount == data.am
+                                      className={` mx-2 ${amount == data.am
                                           ? "text-white"
                                           : "gray-100"
-                                      } `}
+                                        } `}
                                     >
                                       ₹
                                     </span>{" "}
@@ -448,11 +557,10 @@ export default function Recharge() {
                   </div>
 
                   <button
-                    className={`  w-full rounded-full p-2 mt-4  ${
-                      amount > 99
+                    className={`  w-full rounded-full p-2 mt-4  ${amount > 99
                         ? "blue-linear text-black"
                         : "bg-gray-400 text-white"
-                    }`}
+                      }`}
                     disabled={loader ? true : false}
                     onClick={handleSubmit}
                   >
