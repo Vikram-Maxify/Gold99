@@ -7316,10 +7316,300 @@ console.log("error",error)
     }
 };
 
+const handleRechargeppay = async (req, res) => {
+  let auth = req.cookies.auth;
+  let rechid = req.cookies.orderid;
+  let money = req.body.amount;
+  let type = req.body.type;
+  let typeid = req.body.typeid;
+  let utr = req.body.utr;
+
+  if (!auth || !money || money <= 99) {
+    return res.status(200).json({
+      message: "Minimum recharge 100",
+      status: false,
+      timeStamp: timeNow,
+    });
+  }
+
+  const [user] = await connection.query(
+    "SELECT `phone`, `code`,`invite`,`isdemo` FROM users WHERE `token` = ?",
+    [auth],
+  );
+  let userInfo = user[0];
+  if (!user) {
+    return res.status(200).json({
+      message: "Failed",
+      status: false,
+      timeStamp: timeNow,
+    });
+  }
+
+  let checkTime = timerJoin2(Date.now());
+  let time = timerJoin2(Date.now());
+  try {
+    const merchantId = "M514039"; // Replace with your actual Merchant ID
+    const appId = "69816d78559c22f8bbeac1e3"; // Replace with your actual App ID
+    const orderId = `PP${Date.now()}`; // Unique order number
+    const notify_url = `https://99gold.pics/api/webapi/callbackdatappay`; // Replace with your actual notification URL
+    const return_url = `https://99gold.pics`; // Replace with your actual return URL
+
+    // Prepare parameters
+    const params = {
+      mchNo: merchantId,
+      appId: appId,
+      mchOrderNo: orderId,
+      amount: money * 100,
+      customerName: "ZhanSan",
+      customerEmail: "zhangn@gmail.com",
+      customerPhone: "7867986679",
+      notifyUrl: notify_url,
+    };
+    const key =
+      "7xlnLgAsXTymRqIVQE7eUmEuOKSvLDKpDk7sxhf3a6VqCRl4tDqoLCZrALzJ4HtebJ2QgXHYFPVML9Hfz8kM4C4VGvb3z5h1BRR5Ij5irkONjnDOuYw98oQ6BRFnG6YY";
+    // Generate the MD5 signature
+    const sign = md5Sign2(params, key);
+    params.sign = sign;
+
+    // Prepare the request payload
+    const postData = JSON.stringify(params);
+
+    // Collection interface URL
+    const url = "https://pay.ppaypros.com/api/pay/pay";
+
+    // Make the POST request
+    const response = await axios.post(url, params, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response?.data?.code === 0) {
+      const sql = `INSERT INTO recharge SET
+        id_order = ?,
+        transaction_id = ?,
+        phone = ?,
+        money = ?,
+        type = ?,
+        status = ?,
+        today = ?,
+        url = ?,
+        time = ?,
+  userStatus=?
+        
+        `;
+      await connection.execute(sql, [
+        orderId,
+        "0",
+        userInfo.phone,
+        money,
+        type,
+        0,
+        checkTime,
+        "0",
+        time,
+        0,
+      ]);
+      return res.status(200).json({
+        message: "Payment Initiated successfully",
+        data: response.data?.data,
+        status: true,
+      });
+    } else {
+      return res.status(200).json({
+        message: "Payment failed",
+        data: response.data?.data,
+        status: false,
+      });
+    }
+
+    // Return the success response
+  } catch (error) {
+    console.error("Error:", error.response?.data || error.message); // Debugging the error
+    return res.status(500).json({
+      message: "Internal server error",
+      success: false,
+      error: error.response?.data || error.message,
+    });
+  }
+};
+
+const callbackdatappay = async (req, res) => {
+  // console.log("req",req.body)
+  const { payOrderId, mchOrderNo } = req.body;
+
+  try {
+    const merchantId = "M514039"; // Replace with your actual Merchant ID
+    const appId = "69816d78559c22f8bbeac1e3";
+    // Prepare parameters
+    const params = {
+      mchNo: merchantId,
+      appId: appId,
+      payOrderId: payOrderId,
+      mchOrderNo: mchOrderNo,
+    };
+    const key =
+      "7xlnLgAsXTymRqIVQE7eUmEuOKSvLDKpDk7sxhf3a6VqCRl4tDqoLCZrALzJ4HtebJ2QgXHYFPVML9Hfz8kM4C4VGvb3z5h1BRR5Ij5irkONjnDOuYw98oQ6BRFnG6YY";
+    // Generate the MD5 signature
+    const sign = md5Sign2(params, key);
+    params.sign = sign;
+
+    // Prepare the request payload
+    const postData = JSON.stringify(params);
+
+    // Collection interface URL
+    const url = "https://pay.ppaypros.com/api/pay/query";
+
+    // Make the POST request
+    const response = await axios.post(url, params, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    //   console.log("res",response)
+
+    if (response?.data?.code === 0) {
+      const [info] = await connection.query(
+        "SELECT * FROM recharge WHERE id_order = ?",
+        [mchOrderNo],
+      );
+
+      if (info.length > 0) {
+        if (info[0].status === 1) {
+          console.log(
+            "Recharge status is already completed. Skipping user money update.",
+          );
+        } else {
+          const checkTime = timerJoin2(Date.now());
+          const [Firstrecharge] = await connection.query(
+            "SELECT * FROM recharge WHERE phone = ? AND status = ?",
+            [info[0].phone, 1],
+          );
+
+          let bonus = 0;
+          if (info[0].money == 300) {
+            bonus = 48;
+          } else if (info[0].money == 500) {
+            bonus = 108;
+          } else if (info[0].money == 1000) {
+            bonus = 188;
+          } else if (info[0].money == 5000) {
+            bonus = 288;
+          } else if (info[0].money == 10000) {
+            bonus = 488;
+          } else if (info[0].money == 50000) {
+            bonus = 5000;
+          } else if (info[0].money == 100000) {
+            bonus = 12000;
+          } else {
+            bonus = info[0].money * 0.03;
+          }
+
+          if (Firstrecharge.length === 0) {
+            const sql = `INSERT INTO transaction SET
+                purpose = ?,
+                phone = ?,
+                money = ?,
+                type = ?,
+                status = ?,
+                level = ?,
+                today = ?,
+                time = ?`;
+            await connection.execute(sql, [
+              "Big Recharge Bonus",
+              info[0].phone,
+              bonus,
+              "credit",
+              1,
+              1,
+              checkTime,
+              checkTime,
+            ]);
+            await connection.query(
+              "UPDATE users SET money = money + ?, total_money = total_money + ?,recharge=recharge+? WHERE phone = ?",
+              [bonus, bonus, bonus, info[0].phone],
+            );
+            const datasqll =
+              "INSERT INTO transaction_history SET phone = ?, detail = ?, balance = ?, `time` = ?";
+            await connection.query(datasqll, [
+              info[0].phone,
+              "First deposit bonus",
+              bonus,
+              checkTime,
+            ]);
+
+            // upline
+            let refferal = info[0]?.invite;
+            if (refferal !== undefined) {
+              let [refferaluser] = await connection.query(
+                "SELECT * FROM users WHERE `code` = ? LIMIT 1",
+                [refferal],
+              );
+              await connection.query(
+                "UPDATE users SET money = money + ?, total_money = total_money + ? WHERE phone = ?",
+                [18, 18, refferaluser[0]?.phone],
+              );
+
+              const datasql =
+                "INSERT INTO transaction_history SET phone = ?, detail = ?, balance = ?, `time` = ?";
+              await connection.query(datasql, [
+                refferaluser[0]?.phone,
+                "Active member",
+                18,
+                checkTime,
+              ]);
+            }
+          } else {
+            await connection.query(
+              "UPDATE users SET money = money + ?, total_money = total_money + ?,recharge=recharge+? WHERE phone = ?",
+              [bonus, bonus, bonus, info[0].phone],
+            );
+          }
+
+          await connection.query(
+            "UPDATE recharge SET status = 1 WHERE id_order = ?",
+            [mchOrderNo],
+          );
+          await connection.query(
+            "UPDATE users SET money = money + ?, total_money = total_money + ?,recharge=recharge+? ,totalRecharge=totalRecharge+? WHERE phone = ?",
+            [
+              info[0].money,
+              info[0].money,
+              info[0].money,
+              info[0].money,
+              info[0].phone,
+            ],
+          );
+
+          const datasqls =
+            "INSERT INTO transaction_history SET phone = ?, detail = ?, balance = ?, `time` = ?";
+          await connection.query(datasqls, [
+            info[0].phone,
+            "Deposit",
+            info[0].money,
+            checkTime,
+          ]);
+        }
+      } else {
+        console.log("Transaction not found.");
+      }
+    }
+  } catch (error) {
+    console.error("Error:", error.response?.data || error.message); // Debugging the error
+    return res.status(500).json({
+      message: "Internal server error",
+      success: false,
+      error: error.response?.data || error.message,
+    });
+  }
+};
+
 
 module.exports = {
   zilpayCallback,
   zilpay,
+  handleRechargeppay,
+  callbackdatappay,
   verifyTrexoPayPayment,
     initiateTrexoPayPayment,
   userInfo,
