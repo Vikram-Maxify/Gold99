@@ -657,11 +657,11 @@ const Home = () => {
             Notification
           </div>
           <div className="px-2 py-0 font-medium text-left text-sm text-white max-h-[50vh] overflow-auto">
-            <img src="https://i.ibb.co/nqG8XVpt/editor.jpg" alt="" />
+            <img src="https://i.ibb.co/spd13t5j/99-GOLD-Game.png" alt="" />
           </div>
           <h4 className="text-center mt-1">
             <a href="#" className="text-white bg-[#003163]">
-              jalwagamehibot
+              99Goldhibot
             </a>
           </h4>
           <button

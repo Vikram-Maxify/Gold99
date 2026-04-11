@@ -6872,7 +6872,7 @@ const zilpay = async (req, res) => {
       amount: Number(money),
       auth: "TSFHEYY8UH2FLCVCNFGT",
       callback: "https://in91.icu/api/webapi/zilpayCallback",
-      redirect_url: "https://winstar99.fit",
+      redirect_url: "https://99gold.pics",
       user: userInfo.phone,
     };
 
@@ -7150,7 +7150,7 @@ const initiateTrexoPayPayment = async (req, res) => {
         const user_token = "79bf6a0f993ae54510d819a092c51905";
 
         const orderId = getRechargeOrderId();
-        const redirect_url = "https://winstar99.fit/api/webapi/verifyTrexoPayPayment";
+        const redirect_url = "https://99gold.pics/api/webapi/verifyTrexoPayPayment";
 
 
        const params = {

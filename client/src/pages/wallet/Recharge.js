@@ -667,7 +667,7 @@ const channels = [
         ],
       },
       {
-        label: "TY-QRpay",
+        label: "Ppay",
         balance: "100 - 10K",
         depositAmount: [
           // {
@@ -762,7 +762,7 @@ const channels = [
         ],
       },
       {
-        label: "TY-QRpay",
+        label: "Ppay",
         balance: "100 - 10K",
         depositAmount: [
           {
