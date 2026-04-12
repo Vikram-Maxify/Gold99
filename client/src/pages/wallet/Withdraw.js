@@ -133,7 +133,7 @@ const [showConfirmPopup, setShowConfirmPopup] = useState(false);
     {showRechargePopup && (
   <div className="popup-overlay z-50 text-black ">
     <div className="popup-box">
-      <h3>Need to Recharge first</h3>
+      <h3>Withdrawal is open <br/> ₹500 Required to active it</h3>
 
       {/* <input
         type="number"
