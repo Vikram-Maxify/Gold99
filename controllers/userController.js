@@ -12,13 +12,22 @@ import querystring from "querystring";
 
 
 function md5Sign2(params, key) {
+  // ❌ sign ko include mat karo
+  delete params.sign;
+
   const sortedKeys = Object.keys(params).sort();
 
   const string = sortedKeys
+    .filter(k => params[k] !== undefined && params[k] !== "")
     .map(k => `${k}=${params[k]}`)
-    .join('&') + key;
+    .join('&') + `&key=${key}`;
 
-  return crypto.createHash('md5').update(string).digest('hex');
+  console.log("SIGN STRING 👉", string); // 🔥 MUST DEBUG
+
+  return crypto
+    .createHash('md5')
+    .update(string)
+    .digest('hex'); // 👉 try .toUpperCase() if still fail
 }
 
 const logsDirectory = path.join(path.resolve(), "logs");
@@ -5779,7 +5788,7 @@ const userProblemGet = async (req, res) => {
       success: true,
       data: datas[0],
     });
-  } catch (error) {}
+  } catch (error) { }
 };
 
 const adminProblemGet = async (req, res) => {
@@ -5811,7 +5820,7 @@ const adminProblemGet = async (req, res) => {
       success: true,
       data: datas[0],
     });
-  } catch (error) {}
+  } catch (error) { }
 };
 
 const adminProblemSubmit = async (req, res) => {
@@ -5856,7 +5865,7 @@ const adminProblemSubmit = async (req, res) => {
         success: true,
       });
     }
-  } catch (error) {}
+  } catch (error) { }
 };
 
 const getpromotiondata = async (req, res) => {
@@ -7086,18 +7095,18 @@ const zilpayCallback = async (req, res) => {
 };
 
 const getRechargeOrderId = () => {
-    const date = new Date();
-    let id_time =
-        date.getUTCFullYear() +
-        "" +
-        (date.getUTCMonth() + 1) + // Month starts from 0
-        "" +
-        date.getUTCDate();
-    let id_order =
-        Math.floor(Math.random() * (99999999999999 - 10000000000000 + 1)) +
-        10000000000000;
+  const date = new Date();
+  let id_time =
+    date.getUTCFullYear() +
+    "" +
+    (date.getUTCMonth() + 1) + // Month starts from 0
+    "" +
+    date.getUTCDate();
+  let id_order =
+    Math.floor(Math.random() * (99999999999999 - 10000000000000 + 1)) +
+    10000000000000;
 
-    return id_time + id_order;
+  return id_time + id_order;
 };
 
 async function makePostRequest(url, data) {
@@ -7125,205 +7134,205 @@ async function makePostRequest(url, data) {
 
 const initiateTrexoPayPayment = async (req, res) => {
 
-    const auth = req.cookies.auth;
-    const am = req.body.amount
-    const money = req.body.amount
-    const type = req.body.type
+  const auth = req.cookies.auth;
+  const am = req.body.amount
+  const money = req.body.amount
+  const type = req.body.type
 
-    if (!auth || !money || money <= 99) {
-        return res.status(200).json({
-            message: "Minimum recharge 100",
-            status: false,
-            timeStamp: timeNow,
-        });
+  if (!auth || !money || money <= 99) {
+    return res.status(200).json({
+      message: "Minimum recharge 100",
+      status: false,
+      timeStamp: timeNow,
+    });
+  }
+
+  const [user] = await connection.query(
+    "SELECT `phone`, `code`,`invite`,`isdemo` FROM users WHERE `token` = ?",
+    [auth]
+  );
+  let userInfo = user[0];
+  if (!user) {
+    return res.status(200).json({
+      message: "Failed",
+      status: false,
+      timeStamp: timeNow,
+    });
+  }
+
+  let checkTime = timerJoin2(Date.now());
+
+
+  try {
+
+
+    const user_token = "79bf6a0f993ae54510d819a092c51905";
+
+    const orderId = getRechargeOrderId();
+    const redirect_url = "https://99gold.pics/api/webapi/verifyTrexoPayPayment";
+
+
+    const params = {
+      customer_mobile: userInfo.phone,
+      user_token: user_token,
+      amount: am,
+      order_id: orderId,
+      redirect_url: redirect_url,
+      remark1: "recharge",
+      remark2: "wallet",
+      route: 2,
+    };
+
+    const url = "https://merchant.trexopayment.com/api/create-order";
+
+    // FIX: Do NOT pass res here
+    const response = await makePostRequest(url, params);
+
+    if (!response || typeof response.status !== "boolean") {
+      return res.status(500).json({
+        message: "Invalid response from TrexoPay API",
+        status: false,
+        timeStamp: timeNow,
+      });
     }
 
-    const [user] = await connection.query(
-        "SELECT `phone`, `code`,`invite`,`isdemo` FROM users WHERE `token` = ?",
-        [auth]
-    );
-    let userInfo = user[0];
-    if (!user) {
-        return res.status(200).json({
-            message: "Failed",
-            status: false,
-            timeStamp: timeNow,
-        });
-    }
-
-    let checkTime = timerJoin2(Date.now());
-
-
-    try {
-
-
-        const user_token = "79bf6a0f993ae54510d819a092c51905";
-
-        const orderId = getRechargeOrderId();
-        const redirect_url = "https://99gold.pics/api/webapi/verifyTrexoPayPayment";
-
-
-       const params = {
-            customer_mobile: userInfo.phone,
-            user_token: user_token,
-            amount: am,
-            order_id: orderId,
-            redirect_url: redirect_url,
-            remark1: "recharge",
-            remark2: "wallet",
-            route: 2,
-        };
-
-        const url = "https://merchant.trexopayment.com/api/create-order";
-
-        // FIX: Do NOT pass res here
-        const response = await makePostRequest(url, params);
-
-        if (!response || typeof response.status !== "boolean") {
-            return res.status(500).json({
-                message: "Invalid response from TrexoPay API",
-                status: false,
-                timeStamp: timeNow,
-            });
-        }
-
-        if (response.status === true) {
-            const sql = `INSERT INTO recharge 
+    if (response.status === true) {
+      const sql = `INSERT INTO recharge 
                 SET id_order=?, transaction_id=?, phone=?, money=?, type=?, 
                     status=?, today=?, url=?, time=?, userStatus=?`;
 
-            await connection.execute(sql, [
-                orderId,
-                orderId,
-                userInfo.phone,
-                am,
-                type,
-                0,
-                checkTime,
-                "0",
-                checkTime,
-                0,
-            ]);
+      await connection.execute(sql, [
+        orderId,
+        orderId,
+        userInfo.phone,
+        am,
+        type,
+        0,
+        checkTime,
+        "0",
+        checkTime,
+        0,
+      ]);
 
-            return res.status(200).json({
-                message: "TrexoPay payment URL successful",
-                status: true,
-                data: response.result
-            });
-        }
-
-        // If response.status === false
-        return res.status(400).json({
-            message: "TrexoPay rejected the order",
-            status: false,
-            data: response,
-        });
-
-    } catch (error) {
-        console.log("error",error)
-        return res.status(500).json({
-            message: `Payment initiation failed: ${error.message}`,
-            status: false,
-            error: error.message,
-            trexopayError: error.response?.data || null,
-            timeStamp: timeNow,
-        });
+      return res.status(200).json({
+        message: "TrexoPay payment URL successful",
+        status: true,
+        data: response.result
+      });
     }
+
+    // If response.status === false
+    return res.status(400).json({
+      message: "TrexoPay rejected the order",
+      status: false,
+      data: response,
+    });
+
+  } catch (error) {
+    console.log("error", error)
+    return res.status(500).json({
+      message: `Payment initiation failed: ${error.message}`,
+      status: false,
+      error: error.message,
+      trexopayError: error.response?.data || null,
+      timeStamp: timeNow,
+    });
+  }
 };
 
 
 
 const verifyTrexoPayPayment = async (req, res) => {
-    const rawPostData = req.body;
-    let { status, order_id, customer_mobile, amount } = rawPostData;
-    console.log("verifyTrexoPayPayment - rawPostData:", rawPostData);
-    // order_id="2025080182704184500608"
-    try {
-        const [info] = await connection.query('SELECT * FROM recharge WHERE id_order = ?', [order_id]);
+  const rawPostData = req.body;
+  let { status, order_id, customer_mobile, amount } = rawPostData;
+  console.log("verifyTrexoPayPayment - rawPostData:", rawPostData);
+  // order_id="2025080182704184500608"
+  try {
+    const [info] = await connection.query('SELECT * FROM recharge WHERE id_order = ?', [order_id]);
 
-        if (info.length > 0) {
-            if (info[0].status === 1) {
-                console.log('Recharge status is already completed. Skipping user money update.');
-            } else {
-
-
-                const checkTime = timerJoin2(Date.now())
-                const [Firstrecharge] = await connection.query('SELECT * FROM recharge WHERE phone = ? AND status = ?', [info[0].phone, 1]);
-                const [infos] = await connection.query('SELECT `invite`,`code` FROM users WHERE phone = ?', [info[0].phone]);
-
-                let bonus = 0;
-                let bonus2 = info[0].money * 0.02;
-                if (info[0].money > 99 && info[0].money <= 1000) {
-                    bonus = info[0].money * 0.05;
-                } else {
-                    bonus = info[0].money * 0.1;
-                }
-                if (Firstrecharge.length === 0) {
-
-                    await connection.query('UPDATE users SET money = money + ?, total_money = total_money + ? WHERE phone = ?', [bonus, bonus, info[0].phone]);
-                    const datasqll = 'INSERT INTO transaction_history SET phone = ?, detail = ?, balance = ?, `time` = ?';
-                    await connection.query(datasqll, [info[0].phone, "First deposit bonus", bonus, checkTime]);
+    if (info.length > 0) {
+      if (info[0].status === 1) {
+        console.log('Recharge status is already completed. Skipping user money update.');
+      } else {
 
 
-                    // upline
-                    let refferal = infos[0]?.invite;
-                    console.log("reff", refferal)
+        const checkTime = timerJoin2(Date.now())
+        const [Firstrecharge] = await connection.query('SELECT * FROM recharge WHERE phone = ? AND status = ?', [info[0].phone, 1]);
+        const [infos] = await connection.query('SELECT `invite`,`code` FROM users WHERE phone = ?', [info[0].phone]);
 
-                    if (refferal !== undefined) {
+        let bonus = 0;
+        let bonus2 = info[0].money * 0.02;
+        if (info[0].money > 99 && info[0].money <= 1000) {
+          bonus = info[0].money * 0.05;
+        } else {
+          bonus = info[0].money * 0.1;
+        }
+        if (Firstrecharge.length === 0) {
 
-                        let [refferaluser] = await connection.query('SELECT * FROM users WHERE `code` = ? LIMIT 1', [refferal]);
-                        if(refferaluser[0]?.phone){
-                        await connection.query('UPDATE users SET money = money + ?, total_money = total_money + ? WHERE phone = ?', [10, 10, refferaluser[0]?.phone]);
-                        const datasqll = 'INSERT INTO transaction_history SET phone = ?, detail = ?, balance = ?, `time` = ?';
-                        await connection.query(datasqll, [refferaluser[0]?.phone, "Bonus", 10, checkTime]);
-                        }
-                    }
+          await connection.query('UPDATE users SET money = money + ?, total_money = total_money + ? WHERE phone = ?', [bonus, bonus, info[0].phone]);
+          const datasqll = 'INSERT INTO transaction_history SET phone = ?, detail = ?, balance = ?, `time` = ?';
+          await connection.query(datasqll, [info[0].phone, "First deposit bonus", bonus, checkTime]);
 
-                } else {
-                    await connection.query('UPDATE users SET money = money + ?, total_money = total_money + ? WHERE phone = ?', [bonus, bonus, info[0].phone]);
-                    // upline
-                    let refferals = infos[0]?.invite;
-                    if (refferals !== undefined) {
-                        let [refferalusers] = await connection.query('SELECT * FROM users WHERE `code` = ? LIMIT 1', [refferals]);
-                        if(refferalusers[0]?.phone){
-                            
-                       if(refferalusers[0]?.phone){
-                        await connection.query('UPDATE users SET money = money + ?, total_money = total_money + ? WHERE phone = ?', [bonus2, bonus2, refferalusers[0]?.phone]);
 
-                        const datasqls = 'INSERT INTO transaction_history SET phone = ?, detail = ?, balance = ?, `time` = ?';
-                        await connection.query(datasqls, [refferalusers[0]?.phone, "Bonus", bonus2, checkTime]);
-                       }
-                        }
-                    }
-                }
+          // upline
+          let refferal = infos[0]?.invite;
+          console.log("reff", refferal)
 
-                await connection.query('UPDATE recharge SET status = 1 WHERE id_order = ?', [order_id]);
-                await connection.query('UPDATE users SET money = money + ?, total_money = total_money + ?,totalRecharge=totalRecharge+? WHERE phone = ?', [info[0].money, info[0].money, info[0].money, info[0].phone]);
+          if (refferal !== undefined) {
+
+            let [refferaluser] = await connection.query('SELECT * FROM users WHERE `code` = ? LIMIT 1', [refferal]);
+            if (refferaluser[0]?.phone) {
+              await connection.query('UPDATE users SET money = money + ?, total_money = total_money + ? WHERE phone = ?', [10, 10, refferaluser[0]?.phone]);
+              const datasqll = 'INSERT INTO transaction_history SET phone = ?, detail = ?, balance = ?, `time` = ?';
+              await connection.query(datasqll, [refferaluser[0]?.phone, "Bonus", 10, checkTime]);
+            }
+          }
+
+        } else {
+          await connection.query('UPDATE users SET money = money + ?, total_money = total_money + ? WHERE phone = ?', [bonus, bonus, info[0].phone]);
+          // upline
+          let refferals = infos[0]?.invite;
+          if (refferals !== undefined) {
+            let [refferalusers] = await connection.query('SELECT * FROM users WHERE `code` = ? LIMIT 1', [refferals]);
+            if (refferalusers[0]?.phone) {
+
+              if (refferalusers[0]?.phone) {
+                await connection.query('UPDATE users SET money = money + ?, total_money = total_money + ? WHERE phone = ?', [bonus2, bonus2, refferalusers[0]?.phone]);
 
                 const datasqls = 'INSERT INTO transaction_history SET phone = ?, detail = ?, balance = ?, `time` = ?';
-                await connection.query(datasqls, [info[0].phone, "Deposit", info[0].money, checkTime]);
-
-
-                return res.json("success");
-
+                await connection.query(datasqls, [refferalusers[0]?.phone, "Bonus", bonus2, checkTime]);
+              }
             }
-        } else {
-            console.log('Transaction not found.');
-            return res.status(404).json({
-                message: "Transaction not found",
-                success: false,
-            });
-
+          }
         }
-    } catch (error) {
-console.log("error",error)
-        return res.status(500).json({
-            message: `Payment verification failed: ${error.message}`,
-            status: false,
-            error: error.message,
-            timeStamp: new Date().toISOString(),
-        });
+
+        await connection.query('UPDATE recharge SET status = 1 WHERE id_order = ?', [order_id]);
+        await connection.query('UPDATE users SET money = money + ?, total_money = total_money + ?,totalRecharge=totalRecharge+? WHERE phone = ?', [info[0].money, info[0].money, info[0].money, info[0].phone]);
+
+        const datasqls = 'INSERT INTO transaction_history SET phone = ?, detail = ?, balance = ?, `time` = ?';
+        await connection.query(datasqls, [info[0].phone, "Deposit", info[0].money, checkTime]);
+
+
+        return res.json("success");
+
+      }
+    } else {
+      console.log('Transaction not found.');
+      return res.status(404).json({
+        message: "Transaction not found",
+        success: false,
+      });
+
     }
+  } catch (error) {
+    console.log("error", error)
+    return res.status(500).json({
+      message: `Payment verification failed: ${error.message}`,
+      status: false,
+      error: error.message,
+      timeStamp: new Date().toISOString(),
+    });
+  }
 };
 
 const handleRechargeppay = async (req, res) => {
@@ -7348,12 +7357,12 @@ const handleRechargeppay = async (req, res) => {
   );
   let userInfo = user[0];
   if (!userInfo) {
-  return res.status(200).json({
-    message: "User not found",
-    status: false,
-    timeStamp: timeNow,
-  });
-}
+    return res.status(200).json({
+      message: "User not found",
+      status: false,
+      timeStamp: timeNow,
+    });
+  }
 
   let checkTime = timerJoin2(Date.now());
   let time = timerJoin2(Date.now());
@@ -7395,7 +7404,24 @@ const handleRechargeppay = async (req, res) => {
       },
     });
 
-    console.log(response,"response")
+
+    function verifySign(responseData, key) {
+      const { sign, ...rest } = responseData;
+
+      const sortedKeys = Object.keys(rest).sort();
+
+      const str = sortedKeys
+        .map(k => `${k}=${rest[k]}`)
+        .join("&") + `&key=${key}`;
+
+      const newSign = crypto
+        .createHash("md5")
+        .update(str)
+        .digest("hex")
+        .toUpperCase();
+
+      return newSign === sign;
+    }
 
     if (response?.data?.code === 0) {
       const sql = `INSERT INTO recharge SET
@@ -7624,7 +7650,7 @@ module.exports = {
   handleRechargeppay,
   callbackdatappay,
   verifyTrexoPayPayment,
-    initiateTrexoPayPayment,
+  initiateTrexoPayPayment,
   userInfo,
   changeUser,
   changePassword,
