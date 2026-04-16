@@ -11,6 +11,16 @@ import crypto from "crypto"
 import querystring from "querystring";
 
 
+function md5Sign2(params, key) {
+  const sortedKeys = Object.keys(params).sort();
+
+  const string = sortedKeys
+    .map(k => `${k}=${params[k]}`)
+    .join('&') + key;
+
+  return crypto.createHash('md5').update(string).digest('hex');
+}
+
 const logsDirectory = path.join(path.resolve(), "logs");
 if (!fs.existsSync(logsDirectory)) {
   fs.mkdirSync(logsDirectory);
@@ -6872,7 +6882,7 @@ const zilpay = async (req, res) => {
       amount: Number(money),
       auth: "TSFHEYY8UH2FLCVCNFGT",
       callback: "https://in91.icu/api/webapi/zilpayCallback",
-      redirect_url: "https://winstar99.fit",
+      redirect_url: "https://99gold.pics",
       user: userInfo.phone,
     };
 
@@ -7150,7 +7160,7 @@ const initiateTrexoPayPayment = async (req, res) => {
         const user_token = "79bf6a0f993ae54510d819a092c51905";
 
         const orderId = getRechargeOrderId();
-        const redirect_url = "https://winstar99.fit/api/webapi/verifyTrexoPayPayment";
+        const redirect_url = "https://99gold.pics/api/webapi/verifyTrexoPayPayment";
 
 
        const params = {
@@ -7337,13 +7347,13 @@ const handleRechargeppay = async (req, res) => {
     [auth],
   );
   let userInfo = user[0];
-  if (!user) {
-    return res.status(200).json({
-      message: "Failed",
-      status: false,
-      timeStamp: timeNow,
-    });
-  }
+  if (!userInfo) {
+  return res.status(200).json({
+    message: "User not found",
+    status: false,
+    timeStamp: timeNow,
+  });
+}
 
   let checkTime = timerJoin2(Date.now());
   let time = timerJoin2(Date.now());
@@ -7369,6 +7379,7 @@ const handleRechargeppay = async (req, res) => {
       "7xlnLgAsXTymRqIVQE7eUmEuOKSvLDKpDk7sxhf3a6VqCRl4tDqoLCZrALzJ4HtebJ2QgXHYFPVML9Hfz8kM4C4VGvb3z5h1BRR5Ij5irkONjnDOuYw98oQ6BRFnG6YY";
     // Generate the MD5 signature
     const sign = md5Sign2(params, key);
+    console.log("sign", sign);
     params.sign = sign;
 
     // Prepare the request payload
@@ -7383,6 +7394,8 @@ const handleRechargeppay = async (req, res) => {
         "Content-Type": "application/json",
       },
     });
+
+    console.log(response,"response")
 
     if (response?.data?.code === 0) {
       const sql = `INSERT INTO recharge SET

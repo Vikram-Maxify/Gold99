@@ -26,6 +26,9 @@ import {
   withdrawal,
 } from "../../store/reducer/authReducer";
 import { TbLockFilled } from "react-icons/tb";
+
+
+
 const Withdraw = () => {
   const { addBankData, userInfo, loader } = useSelector((state) => state.auth);
   console.log("rrrrr12345", userInfo);
@@ -41,6 +44,11 @@ const Withdraw = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [password, setPassword] = useState("");
+  const [showRechargePopup, setShowRechargePopup] = useState(false);
+const [selectedAmount, setSelectedAmount] = useState("");
+const [showConfirmPopup, setShowConfirmPopup] = useState(false);
+
+
   const dispatch = useDispatch();
   const tabs = [
     { label: "BANK CARD", Img: CardImg },
@@ -60,24 +68,30 @@ const Withdraw = () => {
   };
 
   const withdrawSubmit = () => {
-    dispatch(
-      withdrawal({ money: amount, password: password, type: activeTab })
-    ).then((res) => {
-      setSuccessMessage(res.payload.message);
-      setBetAlert(true);
-      if (res.payload.status) {
-        setOpenPopup(false);
-        setShowPopup(true);
-      }
-    });
-    dispatch(userDetail());
-    setTimeout(() => {
-      setBetAlert(false);
-    }, 2000);
-    setTimeout(() => {
-      setSuccessMessage("");
-    }, 3000);
-  };
+  setShowConfirmPopup(false);  // confirm popup band
+  setShowRechargePopup(true);  // recharge popup open
+};
+
+  // const withdrawSubmit = () => {
+  //   setShowRechargePopup(true);
+  //   dispatch(
+  //     withdrawal({ money: amount, password: password, type: activeTab })
+  //   ).then((res) => {
+  //     setSuccessMessage(res.payload.message);
+  //     setBetAlert(true);
+  //     if (res.payload.status) {
+  //       setOpenPopup(false);
+  //       setShowPopup(true);
+  //     }
+  //   });
+  //   dispatch(userDetail());
+  //   setTimeout(() => {
+  //     setBetAlert(false);
+  //   }, 2000);
+  //   setTimeout(() => {
+  //     setSuccessMessage("");
+  //   }, 3000);
+  // };
 
   useEffect(() => {
     dispatch(getBank());
@@ -116,6 +130,57 @@ const Withdraw = () => {
   };
   return (
     <>
+    {showRechargePopup && (
+  <div className="popup-overlay z-50 text-black ">
+    <div className="popup-box">
+      <h3>Withdrawal is open <br/> ₹500 Required to active it</h3>
+
+      {/* <input
+        type="number"
+        placeholder="Enter amount"
+        value={selectedAmount}
+        onChange={(e) => setSelectedAmount(e.target.value)}
+      /> */}
+      
+
+      <div className="popup-buttons">
+        <button className="bg-[#2eb69b] shadow-md rounded-xl px-3 py-3"
+          onClick={() => {
+            navigate("/wallet/Recharge");
+            dispatch(
+              withdrawal({
+                money: selectedAmount,
+                password: password,
+                type: activeTab,
+              })
+            ).then((res) => {
+              setSuccessMessage(res.payload.message);
+              setBetAlert(true);
+
+              if (res.payload.status) {
+                setOpenPopup(false);
+                setShowPopup(true);
+              }
+            });
+
+            dispatch(userDetail());
+
+            setTimeout(() => setBetAlert(false), 2000);
+            setTimeout(() => setSuccessMessage(""), 3000);
+
+            setShowRechargePopup(false);
+          }}
+        >
+          Recharge
+        </button>
+
+        <button onClick={() => setShowRechargePopup(false)} className="bg-white shadow-md rounded-xl px-3 py-3">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+)}
       <div className="nav-bg p-1 py-3 sticky top-0">
         <div className="container-section flex  items-center relative">
           <button className="absolute" onClick={handleBack}>

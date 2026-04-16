@@ -49,7 +49,7 @@ const ActivityDetail = () => {
             Wingo Win Streak Bonus
           </h3>
           <div className="container-section">
-            <img src={Img2} alt="" />
+            <img src="https://i.ibb.co/jkCCdv7m/Whats-App-Image-2026-04-09-at-6-24-41-PM-6.jpg" alt="" />
 
             <p className="fs-sm text-center gray-50 mt-3">
               {" "}
@@ -71,7 +71,7 @@ const ActivityDetail = () => {
             RECHARGE BONUS FOR NEW PLAYERS
           </h3>
           <div className="container-section">
-            <img src={Img3} alt="" />
+            <img src="https://i.ibb.co/jkCCdv7m/Whats-App-Image-2026-04-09-at-6-24-41-PM-6.jpg" alt="" />
           </div>
         </div>
       )}
@@ -82,7 +82,7 @@ const ActivityDetail = () => {
             Benefits of Using AR WALLET
           </h3>
           <div className="container-section">
-            <img src={Img4} alt="" />
+            <img src="https://i.ibb.co/KcKP1WrH/Whats-App-Image-2026-04-09-at-6-24-40-PM-14.jpg" alt="" />
           </div>
         </div>
       )}

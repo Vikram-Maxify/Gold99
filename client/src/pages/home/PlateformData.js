@@ -7,7 +7,7 @@ const PlatformDetails = () => {
     <div className="p-4 m-4 bg-body flex flex-col items-center rounded ">
       {/* Header */}
       <div className="flex space-x-5 gap-8 mx-auto items-center w-full h-auto max-w-xl mb-6 ">
-        <img src="./logo.png" alt="Logo" className=" h-9 mb-2 w-40" />
+        <img src="https://i.ibb.co/v4sjnG7j/GOLD-3.png" alt="Logo" className=" h-9 mb-2 w-40" />
         <div className="flex items-center justify-center space-x-3">
           <span className="flex items-center justify-center w-12 h-12 rounded-full color-blue font-bold text-lg border-[#00ECBE] border-2">
             18+
@@ -70,7 +70,7 @@ const PlatformDetails = () => {
               ></rect>
             </svg>
           </span>{" "}
-          Jalwa9game works with more than 10,000 online live game dealers and
+          99Gold works with more than 10,000 online live game dealers and
           slot games, all of which are verified fair games.
         </p>
         <p className="flex items-start gap-1">
@@ -94,7 +94,7 @@ const PlatformDetails = () => {
               ></rect>
             </svg>
           </span>{" "}
-          Jalwa9game supports fast deposit and withdrawal and looks forward to
+          99Gold supports fast deposit and withdrawal and looks forward to
           your visit.
         </p>
         <br />
@@ -102,7 +102,7 @@ const PlatformDetails = () => {
           Gambling can be addictive, please play rationally.
         </p>
         <p className="text-white">
-          Jalwa9game only accepts customers above the age of 18.
+          99Gold only accepts customers above the age of 18.
         </p>
       </div>
     </div>
