@@ -168,110 +168,112 @@ export default function Recharge() {
   //   }
   // };
 
-  const handleSubmit = async () => {
-    const type = activeTab2;
-    const formData = new FormData();
-    formData.append("amount", amount);
-    formData.append("type", type);
+const handleSubmit = async () => {
+  const type = activeTab2;
+  const formData = new FormData();
+  formData.append("amount", amount);
+  formData.append("type", type);
 
-    if (activeTab === "UPI-QR") {
-      if (bannergetData?.chennal?.status1 == 1) {
-        dispatch(TrexoPayment({ amount, type })).then((res) => {
-          setSuccessMessage(res.payload.message);
-          if (res.payload.status) {
-            setAlertsuccess(true);
-            // console.log("data",res.payload.data)
-            window.location.href = res.payload.data.payment_url;
-          } else {
-            setAlerts(true);
-          }
-          setTimeout(() => {
-            setSuccessMessage("");
-          }, 3000);
-        });
-      } else {
-        dispatch(recharge3({ amount, type })).then((res) => {
-          setSuccessMessage(res.payload.message);
-          if (res.payload.status) {
-            setAlertsuccess(true);
+  if (activeTab === "UPI-QR") {
 
-            window.open(res.payload.data.payData, "_blank");
-          } else {
-            setAlerts(true);
-          }
-          setTimeout(() => {
-            setSuccessMessage("");
-          }, 2000);
-        });
-      }
-    } else if (activeTab === "UPI-QRpay" || activeTab === "Wake UP-APP") {
-      if (bannergetData?.chennal?.status2 == 1) {
-        dispatch(recharge3({ amount, type })).then((res) => {
-          setSuccessMessage(res.payload.message);
-          if (res.payload.status) {
-            setAlertsuccess(true);
-
-            window.open(res.payload.data.payData, "_blank");
-          } else {
-            setAlerts(true);
-          }
-          setTimeout(() => {
-            setSuccessMessage("");
-          }, 2000);
-        });
-      } else {
-        dispatch(recharge3({ amount, type })).then((res) => {
-          setSuccessMessage(res.payload.message);
-          if (res.payload.status) {
-            setAlertsuccess(true);
-
-            window.open(res.payload.data.payData, "_blank");
-          } else {
-            setAlerts(true);
-          }
-          setTimeout(() => {
-            setSuccessMessage("");
-          }, 2000);
-        });
-      }
-    } else if (activeTab === "UPI-PayTM") {
-      if (bannergetData?.chennal?.status3 == 1) {
-        dispatch(TrexoPayment({ amount, type })).then((res) => {
-          setSuccessMessage(res.payload.message);
-          if (res.payload.status) {
-            setAlertsuccess(true);
-            // console.log("data",res.payload.data)
-            window.location.href = res.payload.data.payment_url;
-          } else {
-            setAlerts(true);
-          }
-          setTimeout(() => {
-            setSuccessMessage("");
-          }, 3000);
-        });
-      } else {
-        dispatch(TrexoPayment({ amount, type })).then((res) => {
-          setSuccessMessage(res.payload.message);
-          if (res.payload.status) {
-            setAlertsuccess(true);
-            // console.log("data",res.payload.data)
-            window.location.href = res.payload.data.payment_url;
-          } else {
-            setAlerts(true);
-          }
-          setTimeout(() => {
-            setSuccessMessage("");
-          }, 3000);
-        });
-      }
-    } else {
-      dispatch(zilpayRecharge({ amount, type })).then((res) => {
+    // FIX: Ppay ke liye recharge3 use hoga
+    if (activeTab2 === "Ppay") {
+      dispatch(recharge3({ amount, type })).then((res) => {
         setSuccessMessage(res.payload.message);
         if (res.payload.status) {
           setAlertsuccess(true);
-          // const urls=res.payload.data.url
-          window.location.href = res.payload.data.url;
-          //  window.open(urls, "_blank");
+          window.open(res.payload.data.payData, "_blank");
+        } else {
+          setAlerts(true);
+        }
+        setTimeout(() => {
+          setSuccessMessage("");
+        }, 2000);
+      });
+    }
+
+    else if (bannergetData?.chennal?.status1 == 1) {
+      dispatch(TrexoPayment({ amount, type })).then((res) => {
+        setSuccessMessage(res.payload.message);
+        if (res.payload.status) {
+          setAlertsuccess(true);
+          window.location.href = res.payload.data.payment_url;
+        } else {
+          setAlerts(true);
+        }
+        setTimeout(() => {
+          setSuccessMessage("");
+        }, 3000);
+      });
+    } 
+    
+    else {
+      dispatch(recharge3({ amount, type })).then((res) => {
+        setSuccessMessage(res.payload.message);
+        if (res.payload.status) {
+          setAlertsuccess(true);
+          window.open(res.payload.data.payData, "_blank");
+        } else {
+          setAlerts(true);
+        }
+        setTimeout(() => {
+          setSuccessMessage("");
+        }, 2000);
+      });
+    }
+
+  } 
+  
+  else if (activeTab === "UPI-QRpay" || activeTab === "Wake UP-APP") {
+    if (bannergetData?.chennal?.status2 == 1) {
+      dispatch(recharge3({ amount, type })).then((res) => {
+        setSuccessMessage(res.payload.message);
+        if (res.payload.status) {
+          setAlertsuccess(true);
+          window.open(res.payload.data.payData, "_blank");
+        } else {
+          setAlerts(true);
+        }
+        setTimeout(() => {
+          setSuccessMessage("");
+        }, 2000);
+      });
+    } else {
+      dispatch(recharge3({ amount, type })).then((res) => {
+        setSuccessMessage(res.payload.message);
+        if (res.payload.status) {
+          setAlertsuccess(true);
+          window.open(res.payload.data.payData, "_blank");
+        } else {
+          setAlerts(true);
+        }
+        setTimeout(() => {
+          setSuccessMessage("");
+        }, 2000);
+      });
+    }
+  } 
+  
+  else if (activeTab === "UPI-PayTM") {
+    if (bannergetData?.chennal?.status3 == 1) {
+      dispatch(TrexoPayment({ amount, type })).then((res) => {
+        setSuccessMessage(res.payload.message);
+        if (res.payload.status) {
+          setAlertsuccess(true);
+          window.location.href = res.payload.data.payment_url;
+        } else {
+          setAlerts(true);
+        }
+        setTimeout(() => {
+          setSuccessMessage("");
+        }, 3000);
+      });
+    } else {
+      dispatch(TrexoPayment({ amount, type })).then((res) => {
+        setSuccessMessage(res.payload.message);
+        if (res.payload.status) {
+          setAlertsuccess(true);
+          window.location.href = res.payload.data.payment_url;
         } else {
           setAlerts(true);
         }
@@ -280,7 +282,24 @@ export default function Recharge() {
         }, 3000);
       });
     }
-  };
+  } 
+  
+  else {
+    dispatch(zilpayRecharge({ amount, type })).then((res) => {
+      setSuccessMessage(res.payload.message);
+      if (res.payload.status) {
+        setAlertsuccess(true);
+        window.location.href = res.payload.data.url;
+      } else {
+        setAlerts(true);
+      }
+      setTimeout(() => {
+        setSuccessMessage("");
+      }, 3000);
+    });
+  }
+};
+
   const handleSubmitUSDT = async () => {
     const type = "USDT";
     const formData = new FormData();
