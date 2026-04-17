@@ -300,7 +300,7 @@ const Promotion = () => {
           <li className="mt-2 nav-bg p-3 py-4 rounded-lg">
             <Link
               className="flex justify-between items-center  "
-              // to={"/main/CustomerService"}
+              // to={"http://h5workordersupport.trueprofit.biz/"}
             >
               <div className="flex items-center ">
                 <img src={CustomerServiceImg} alt="" className="w-7" />

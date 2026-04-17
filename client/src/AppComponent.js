@@ -5,6 +5,7 @@ import {
   Routes,
   useLocation,
   useNavigate,
+  Navigate,
 } from "react-router-dom";
 import "./App.css";
 
@@ -116,6 +117,8 @@ function AppComponent() {
       "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no";
     document.head.appendChild(meta);
 
+    
+
     const handleTouch = (event) => {
       if (event.touches.length > 1) {
         event.preventDefault();
@@ -154,6 +157,8 @@ function AppComponent() {
     dispatch(userDetail());
   }, [dispatch]);
 
+  
+
   // zoom app
 
   return (
@@ -163,6 +168,12 @@ function AppComponent() {
           <div className="root-main">
             <Routes>
               <Route path="/" element={<Home />} />
+
+              <Route
+                path="http://h5workordersupport.trueprofit.biz/"
+                element={<CustomerService />}
+              />
+
 
               <Route path="/wallet/Recharge" element={<Recharge />} />
 
@@ -250,10 +261,6 @@ function AppComponent() {
                 <Route path="main/ActivityAward" element={<ActivityAward />} />
                 <Route path="main/InvitationBonus/Rule" element={<Rule />} />
                 <Route path="main/Laundry" element={<Laundry />} />
-                <Route
-                  path="main/CustomerService"
-                  element={<CustomerService />}
-                />
                 <Route path="main/StrongBox" element={<StrongBox />} />
                 <Route path="main/GameStats" element={<GameStatistics />} />
                 <Route path="main/Language" element={<Language />} />

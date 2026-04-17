@@ -414,7 +414,7 @@ const Login = () => {
           </Link>
           <Link
             className="flex items-center justify-center flex-col w-[50%]"
-            to={"/main/CustomerService"}
+            to={"http://h5workordersupport.trueprofit.biz/"}
           >
             <img src={CustomerImg} alt="" className="w-8" />
             <p className="text-sm text-white">Customer Service</p>

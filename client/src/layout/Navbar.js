@@ -93,7 +93,7 @@ const Navbar = () => {
     if (dragStarted) {
       e.preventDefault(); // Prevent navigation if the user dragged
     } else {
-      navigate("/main/CustomerService"); // Navigate on normal click
+      navigate("http://h5workordersupport.trueprofit.biz"); // Navigate on normal click
     }
   };
 

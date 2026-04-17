@@ -660,7 +660,7 @@ const Wingo = () => {
             <img src={bannergetData?.gameall?.logo} alt="" className="w-28" />
           </div>
           <p className="absolute right-1 flex items-center">
-            <Link to={"/main/CustomerService"} className=" gray-50 ">
+            <Link to={"http://h5workordersupport.trueprofit.biz/"} className=" gray-50 ">
               <MdSupportAgent className="text-white text-2xl" />
             </Link>
             <Link>

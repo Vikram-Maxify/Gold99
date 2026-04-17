@@ -362,7 +362,7 @@ const Main = () => {
             </div>
             <div
               className="col-span-4  flex flex-col justify-center items-center ms-2 mt-2"
-              onClick={() => navigate("/main/CustomerService")}
+              onClick={() => navigate("http://h5workordersupport.trueprofit.biz/")}
             >
               <img src={Customericon} alt="" className="w-6 mb-2 " />
               <p className="gray-100 text-sm text-center">

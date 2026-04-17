@@ -35394,7 +35394,7 @@ const lt = Ro,
     }),
     ia = "/login",
     eS = ["/500", "/", "/main/About/AboutDetail", "/rpwd",
-        "/register", "/main/CustomerService", "/main/Language",
+        "/register", "http://h5workordersupport.trueprofit.biz/", "/main/Language",
         "/main/CustomerService/ServiceCollection"
     ],
     aS = ["home", "activity", "main", "promotion", "chat", "wallet"],
